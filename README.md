@@ -4,24 +4,6 @@ This repository contains the implementation of a modified Raft system with leade
 
 ---
 
-### Project Structure
-
----
-assignment/
-│
-├─ logs_node_0/
-│  ├─ logs.txt
-│  ├─ metadata.txt
-│  ├─ dump.txt
-│
-├─ logs_node_1/
-│  ├─ logs.txt
-│  ├─ metadata.txt
-│  ├─ dump.txt
-│
-└─ README.md
-
----
 
 ### Resources
 
