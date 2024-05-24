@@ -1,0 +1,82 @@
+// python3 -m grpc_tools.protoc raft.proto --proto_path=. --python_out=. --grpc_python_out=.
+
+syntax = "proto3";
+
+service RaftNode {
+        rpc RequestVote(VoteRequest) returns (ResultWithTerm) {}
+        rpc AppendEntries(AppendRequest) returns (ResultWithTerm) {}
+        rpc GetLeader(EmptyMessage) returns (GetLeaderReply) {}
+        rpc Suspend(SuspendRequest) returns (EmptyMessage) {}
+        rpc SetVal(SetRequest) returns (SetReply) {}
+        rpc GetVal(GetRequest) returns (GetReply) {}
+}
+
+// Election Vote
+
+message VoteRequest {
+        int64 term = 1; // Candidate's term.
+        int64 candidate_id = 2;
+        int64 last_log_index = 3;
+        int64 last_log_term = 4;
+}
+
+// AppendEntries (Only Heartbeats for this lab)
+
+message AppendRequest {
+        int64 term = 1; // Current term number from the leader
+        int64 leader_id = 2; // Leader's id. So that the follower knows who his leader is
+        int64 prev_log_index = 3; // Index of the log entry immediately preceding new ones
+        int64 prev_log_term = 4; // Term of prev_log_index entry
+        repeated Entry entries = 5; // Log entries to store (empty for heartbeat)
+        int64 leader_commit = 6; // Leader's commitIndex
+}
+
+// GetLeader (Called by the client)
+
+message GetLeaderReply {
+        int64 leader_id = 1;
+        string address = 2;
+}
+
+// Suspend (Called by the client)
+
+message SuspendRequest {
+        int64 period = 1;
+}
+
+// Set (Called by the client)
+
+message SetRequest {
+        string key = 1;
+        string value = 2;
+}
+    
+message SetReply {
+        bool success = 1;
+}
+    
+// Get (Called by the client)
+    
+message GetRequest {
+        string key = 1;
+}
+    
+message GetReply {
+        bool success = 1;
+        string value = 2;
+}
+
+// Helpers
+
+message Entry {
+        int64 term = 1;
+        string key = 2;
+        string value = 3;
+}
+
+message ResultWithTerm {
+        int64 term = 1; // Term number of the server
+        bool result = 2; 
+}
+
+message EmptyMessage {}
